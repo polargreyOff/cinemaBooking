@@ -1,9 +1,9 @@
 package gradle.example.com.cinemabooking.services;
 
-import gradle.example.com.cinemabooking.dto.CreateMovieRequest;
-import gradle.example.com.cinemabooking.dto.UpdateMovieRequest;
 import gradle.example.com.cinemabooking.exceptions.InvalidMovieException;
 import gradle.example.com.cinemabooking.exceptions.MovieNotFoundException;
+import gradle.example.com.cinemabooking.generated.model.CreateMovieRequest;
+import gradle.example.com.cinemabooking.generated.model.UpdateMovieRequest;
 import gradle.example.com.cinemabooking.models.Movie;
 import gradle.example.com.cinemabooking.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class MovieService {
                 null,
                 request.getTitle(),
                 request.getDuration(),
-                request.getAge_rating(),
+                request.getAgeRating(),
                 request.getDescription()
         );
 
@@ -62,8 +62,8 @@ public class MovieService {
             movie.setDuration(request.getDuration());
         }
 
-        if (request.getAge_rating() != null) {
-            movie.setAge_rating(request.getAge_rating());
+        if (request.getAgeRating() != null) {
+            movie.setAge_rating(request.getAgeRating());
         }
 
         if (request.getDescription() != null) {

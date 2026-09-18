@@ -113,6 +113,8 @@ components:
         - id
         - title
         - duration
+        - age_rating
+        - description
       properties:
         id:
           type: integer

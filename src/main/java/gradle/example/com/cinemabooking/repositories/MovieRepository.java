@@ -1,6 +1,7 @@
 package gradle.example.com.cinemabooking.repositories;
 
 import gradle.example.com.cinemabooking.dto.UpdateMovieRequest;
+import gradle.example.com.cinemabooking.generated.api.MoviesApi;
 import gradle.example.com.cinemabooking.models.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.simple.JdbcClient;

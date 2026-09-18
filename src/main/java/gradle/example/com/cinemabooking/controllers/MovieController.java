@@ -1,8 +1,10 @@
 package gradle.example.com.cinemabooking.controllers;
 
-import gradle.example.com.cinemabooking.dto.CreateMovieRequest;
-import gradle.example.com.cinemabooking.dto.UpdateMovieRequest;
 import gradle.example.com.cinemabooking.generated.api.MoviesApi;
+import gradle.example.com.cinemabooking.generated.model.CreateMovieRequest;
+import gradle.example.com.cinemabooking.generated.model.MovieResponse;
+import gradle.example.com.cinemabooking.generated.model.UpdateMovieRequest;
+import gradle.example.com.cinemabooking.mappers.MovieMapper;
 import gradle.example.com.cinemabooking.models.Movie;
 import gradle.example.com.cinemabooking.services.MovieService;
 import jakarta.validation.Valid;
@@ -14,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/movies")
-public class MovieController {
+public class MovieController implements MoviesApi {
 
     private MovieService movieService;
 
@@ -24,32 +25,35 @@ public class MovieController {
         this.movieService = movieService;
     }
 
-    @GetMapping
-    public List<Movie> getMovies() {
-        return movieService.getAll();
+    public ResponseEntity<List<MovieResponse>> getMovies() {
+        List<MovieResponse> response = movieService.getAll()
+                .stream()
+                .map(MovieMapper::toMovieResponse)
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public Movie getMovie(@PathVariable Long id) {
-        return movieService.getMovie(id);
+
+    public ResponseEntity<MovieResponse> getMovieById(@PathVariable Long id) {
+        Movie movie = movieService.getMovie(id);
+        return ResponseEntity.ok(MovieMapper.toMovieResponse(movie));
     }
 
-    @PostMapping
-    public ResponseEntity<Movie> add(@Valid @RequestBody CreateMovieRequest movie) {
+    public ResponseEntity<MovieResponse> createMovie(@Valid @RequestBody CreateMovieRequest movie) {
         Movie createdMovie = movieService.add(movie);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdMovie);
+        return ResponseEntity.status(HttpStatus.CREATED).body(MovieMapper.toMovieResponse(createdMovie));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
         movieService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<Movie> update(@PathVariable Long id, @Valid @RequestBody UpdateMovieRequest movie) {
+
+    public ResponseEntity<MovieResponse> updateMovie(@PathVariable Long id, @Valid @RequestBody UpdateMovieRequest movie) {
         Movie updatedMovie = movieService.update(id, movie);
-        return ResponseEntity.status(HttpStatus.OK).body(updatedMovie);
+        return ResponseEntity.status(HttpStatus.OK).body(MovieMapper.toMovieResponse(updatedMovie));
     }
 }

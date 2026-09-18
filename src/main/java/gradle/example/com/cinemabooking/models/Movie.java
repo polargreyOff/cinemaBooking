@@ -8,10 +8,6 @@ public class Movie {
     private String age_rating;
     private String description;
 
-    public Movie() {
-
-    }
-
     public Movie(Long id, String title, int duration, String age_rating, String description) {
         this.id = id;
         this.title = title;
