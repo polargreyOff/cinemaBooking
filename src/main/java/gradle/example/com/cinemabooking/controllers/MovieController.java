@@ -35,24 +35,24 @@ public class MovieController implements MoviesApi {
     }
 
 
-    public ResponseEntity<MovieResponse> getMovieById(@PathVariable Long id) {
+    public ResponseEntity<MovieResponse> getMovieById(Long id) {
         Movie movie = movieService.getMovie(id);
         return ResponseEntity.ok(MovieMapper.toMovieResponse(movie));
     }
 
-    public ResponseEntity<MovieResponse> createMovie(@Valid @RequestBody CreateMovieRequest movie) {
+    public ResponseEntity<MovieResponse> createMovie(CreateMovieRequest movie) {
         Movie createdMovie = movieService.add(movie);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(MovieMapper.toMovieResponse(createdMovie));
     }
 
-    public ResponseEntity<Void> deleteMovie(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMovie(Long id) {
         movieService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
 
-    public ResponseEntity<MovieResponse> updateMovie(@PathVariable Long id, @Valid @RequestBody UpdateMovieRequest movie) {
+    public ResponseEntity<MovieResponse> updateMovie(Long id, UpdateMovieRequest movie) {
         Movie updatedMovie = movieService.update(id, movie);
         return ResponseEntity.status(HttpStatus.OK).body(MovieMapper.toMovieResponse(updatedMovie));
     }

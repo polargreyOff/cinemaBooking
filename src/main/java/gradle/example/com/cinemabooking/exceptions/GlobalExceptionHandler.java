@@ -30,4 +30,16 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+    @ExceptionHandler(InvalidHallException.class)
+    public  ResponseEntity<ErrorResponse> handleInvalidHall(InvalidHallException exception) {
+        ErrorResponse response = ErrorResponse.create(exception, HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(HallNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleHallNotFound(HallNotFoundException exception) {
+        ErrorResponse response = ErrorResponse.create(exception, HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
 }
