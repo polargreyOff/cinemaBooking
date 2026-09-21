@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/changes/002-add-movie-description.sql
   - include:
       file: db/changelog/changes/003-alter_hall.sql
+  - include:
+      file: db/changelog/changes/004-alter_user_data.sql

@@ -5,6 +5,98 @@ info:
   version: 1.0.0
 
 paths:
+  /api/halls/{hallId}/seats:
+    get:
+      tags:
+        - Seats
+      operationId: getSeatsByHall
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of seats in hall
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SeatResponse'
+        '404':
+          description: Hall not found
+
+    post:
+      tags:
+        - Seats
+      operationId: createSeat
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSeatRequest'
+      responses:
+        '201':
+          description: Seat created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatResponse'
+        '400':
+          description: Invalid seat data
+        '404':
+          description: Hall not found
+        '409':
+          description: Seat already exists
+
+  /api/seats/{id}:
+    get:
+      tags:
+        - Seats
+      operationId: getSeatById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Seat found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatResponse'
+        '404':
+          description: Seat not found
+    delete:
+      tags:
+        - Seats
+      operationId: deleteSeat
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Seat deleted
+        '404':
+          description: Seat not found
   /api/halls:
     get:
       tags:
@@ -289,5 +381,38 @@ components:
       type: object
       properties:
         number:
+          type: integer
+          minimum: 1
+    SeatResponse:
+      type: object
+      required:
+        - id
+        - hallId
+        - rowNumber
+        - seatNumber
+      properties:
+        id:
+          type: integer
+          format: int64
+        hallId:
+          type: integer
+          format: int64
+        rowNumber:
+          type: integer
+          minimum: 1
+        seatNumber:
+          type: integer
+          minimum: 1
+
+    CreateSeatRequest:
+      type: object
+      required:
+        - rowNumber
+        - seatNumber
+      properties:
+        rowNumber:
+          type: integer
+          minimum: 1
+        seatNumber:
           type: integer
           minimum: 1

@@ -52,7 +52,10 @@ public class HallService {
 
     }
 
-    public int delete(Long id) {
-        return hallRepository.deleteById(id);
+    public void delete(Long id) {
+        int deletedRows = hallRepository.deleteById(id);
+        if (deletedRows <= 0) {
+            throw new HallNotFoundException(id);
+        }
     }
 }

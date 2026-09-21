@@ -4,7 +4,10 @@ import gradle.example.com.cinemabooking.generated.model.CreateHallRequest;
 import gradle.example.com.cinemabooking.generated.model.HallResponse;
 import gradle.example.com.cinemabooking.generated.model.UpdateHallRequest;
 import gradle.example.com.cinemabooking.models.Hall;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class HallMapper {
     public static HallResponse toHallResponse(Hall hall) {
         HallResponse response = new HallResponse();
