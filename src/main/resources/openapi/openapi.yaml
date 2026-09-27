@@ -5,6 +5,200 @@ info:
   version: 1.0.0
 
 paths:
+  /api/sessions:
+    get:
+      tags:
+        - Sessions
+      operationId: getSessions
+      parameters:
+        - name: movieTitle
+          in: query
+          required: false
+          schema:
+            type: string
+
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - startTime
+              - price
+              - movieTitle
+            default: startTime
+
+        - name: direction
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: asc
+
+      responses:
+        '200':
+          description: Page of sessions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionPageResponse'
+
+    post:
+      tags:
+        - Sessions
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          description: Invalid session data
+        '404':
+          description: Movie or hall not found
+
+  /api/sessions/{id}:
+    get:
+      tags:
+        - Sessions
+      operationId: getSessionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Session found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '404':
+          description: Session not found
+
+    delete:
+      tags:
+        - Sessions
+      operationId: deleteSession
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Session deleted
+        '404':
+          description: Session not found
+  /api/auth/logout:
+    post:
+      tags:
+        - Auth
+      operationId: logout
+      responses:
+        '204':
+          description: Successfully logged out
+        '403':
+          description: Invalid or missing CSRF token
+  /api/auth/me:
+    get:
+      tags:
+        - Auth
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Current authenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Authentication required
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successfully authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Invalid request
+        '401':
+          description: Invalid login or password
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Invalid registration data
+        '409':
+          description: Login already exists
+
   /api/halls/{hallId}/seats:
     get:
       tags:
@@ -300,6 +494,83 @@ paths:
 
 components:
   schemas:
+    SessionResponse:
+      type: object
+      required:
+        - id
+        - movie
+        - hallId
+        - startTime
+        - price
+      properties:
+        id:
+          type: integer
+          format: int64
+
+        movie:
+          $ref: '#/components/schemas/MovieResponse'
+
+        hallId:
+          type: integer
+          format: int64
+
+        startTime:
+          type: string
+          format: date-time
+
+        price:
+          type: integer
+
+    CreateSessionRequest:
+      type: object
+      required:
+        - movieId
+        - hallId
+        - startTime
+        - price
+      properties:
+        movieId:
+          type: integer
+          format: int64
+
+        hallId:
+          type: integer
+          format: int64
+
+        startTime:
+          type: string
+          format: date-time
+
+        price:
+          type: integer
+          minimum: 1
+
+    SessionPageResponse:
+      type: object
+      required:
+        - content
+        - page
+        - size
+        - totalElements
+        - totalPages
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/SessionResponse'
+
+        page:
+          type: integer
+
+        size:
+          type: integer
+
+        totalElements:
+          type: integer
+          format: int64
+
+        totalPages:
+          type: integer
 
     MovieResponse:
       type: object
@@ -416,3 +687,57 @@ components:
         seatNumber:
           type: integer
           minimum: 1
+    RegisterRequest:
+      type: object
+      required:
+        - name
+        - login
+        - password
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        login:
+          type: string
+          minLength: 3
+          maxLength: 100
+          pattern: '^[a-zA-Z0-9_]+$'
+        password:
+          type: string
+          minLength: 8
+          maxLength: 72
+          format: password
+        phone:
+          type: string
+          maxLength: 30
+
+    UserResponse:
+      type: object
+      required:
+        - id
+        - name
+        - login
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        login:
+          type: string
+        phone:
+          type: string
+    LoginRequest:
+      type: object
+      required:
+        - login
+        - password
+      properties:
+        login:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+          format: password
