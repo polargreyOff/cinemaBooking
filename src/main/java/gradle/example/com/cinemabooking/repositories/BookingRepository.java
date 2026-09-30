@@ -39,8 +39,12 @@ public class BookingRepository {
 
     public boolean existsActiveBooking(Long sessionId, Long seatId) {
         return jdbcClient.sql("""
-            SELECT 1 FROM booking
-            WHERE session_id = :sessionId AND seat_id = :seatId
+            SELECT EXISTS (
+                            SELECT 1
+                            FROM booking
+                            WHERE session_id = :sessionId
+                              AND seat_id = :seatId
+                        )
         """)
         .param("sessionId", sessionId)
         .param("seatId", seatId)
@@ -51,6 +55,8 @@ public class BookingRepository {
     public Optional<Booking> findById(Long bookingId) {
         return jdbcClient.sql("""
             SELECT 
+                user_id,
+                
                 b.id AS booking_id,
                 b.booking_time,
                 
