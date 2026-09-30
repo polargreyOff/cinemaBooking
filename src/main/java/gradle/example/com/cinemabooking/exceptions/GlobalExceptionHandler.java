@@ -11,6 +11,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(BookingCancellationUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleBookingCancellationUnavailable(BookingCancellationUnavailableException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBookingNotFoundException(BookingNotFoundException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.NOT_FOUND, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(BookingAccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleBookingAccessDeniedException(BookingAccessDeniedException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.FORBIDDEN, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
     @ExceptionHandler(SeatAlreadyBookedException.class)
     public ResponseEntity<ErrorResponse> handleSeatAlreadyBookedException(SeatAlreadyBookedException ex) {
         ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());

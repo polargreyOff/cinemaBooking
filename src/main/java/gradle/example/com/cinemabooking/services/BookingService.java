@@ -1,10 +1,11 @@
 package gradle.example.com.cinemabooking.services;
 
+import gradle.example.com.cinemabooking.exceptions.BookingAccessDeniedException;
+import gradle.example.com.cinemabooking.exceptions.BookingNotFoundException;
 import gradle.example.com.cinemabooking.exceptions.SeatAlreadyBookedException;
 import gradle.example.com.cinemabooking.generated.model.*;
 import gradle.example.com.cinemabooking.mappers.BookingMapper;
 import gradle.example.com.cinemabooking.models.Booking;
-import gradle.example.com.cinemabooking.models.UserData;
 import gradle.example.com.cinemabooking.repositories.BookingRepository;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
@@ -41,14 +42,12 @@ public class BookingService {
 
     @Transactional
     public BookingResponse createBooking(CreateBookingRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserResponse user = getCurrentUser();
 
         SessionResponse session = movieSessionService.getById(request.getSessionId());
         SeatResponse seat = seatService.getById(request.getSeatId());
 
         bookingValidationService.validateCreateBooking(session, seat);
-
-        UserResponse user = authService.getByLogin(authentication.getName());
 
         Long bookingId;
         try {
@@ -67,13 +66,25 @@ public class BookingService {
     }
 
     public List<BookingResponse> getMyBookings() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        UserResponse user = authService.getByLogin(authentication.getName());
+        UserResponse user = getCurrentUser();
 
         return bookingRepository.findAllByUserId(user.getId())
             .stream()
             .map(bookingMapper::toBookingResponse)
             .toList();
+    }
+
+    public void cancelBooking(Long bookingId) {
+        UserResponse user = getCurrentUser();
+
+        bookingValidationService.validateDeleteBooking(user, bookingId);
+
+        bookingRepository.deleteById(bookingId);
+    }
+
+    private UserResponse getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserResponse user = authService.getByLogin(authentication.getName());
+        return user;
     }
 }

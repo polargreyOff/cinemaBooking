@@ -17,6 +17,33 @@ public class SeatRepository {
         this.jdbcClient = jdbcClient;
     }
 
+    public int generateSeats(
+            Long hallId,
+            int rows,
+            int seatsPerRow
+    ) {
+        return jdbcClient.sql("""
+            INSERT INTO seat (
+                hall_id,
+                row_number,
+                seat_number
+            )
+            SELECT
+                :hallId,
+                row_number,
+                seat_number
+            FROM generate_series(1, :rows) AS row_number
+            CROSS JOIN generate_series(
+                1,
+                :seatsPerRow
+            ) AS seat_number
+            """)
+                .param("hallId", hallId)
+                .param("rows", rows)
+                .param("seatsPerRow", seatsPerRow)
+                .update();
+    }
+
     public List<Seat> findByHallId(Long hallId) {
         return jdbcClient.sql("""
             SELECT * FROM seat WHERE hall_id = :hallId

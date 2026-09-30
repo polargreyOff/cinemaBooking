@@ -29,4 +29,11 @@ public class BookingController implements BookingsApi {
         List<BookingResponse> response =  bookingService.getMyBookings();
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<Void> cancelBooking(Long id) {
+        bookingService.cancelBooking(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

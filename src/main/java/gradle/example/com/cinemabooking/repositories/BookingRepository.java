@@ -126,4 +126,13 @@ public class BookingRepository {
         .query(bookingMapper::resultSetToBooking)
         .list();
     }
+
+    public int deleteById(Long bookingId) {
+        return jdbcClient.sql("""
+            DELETE FROM booking
+            WHERE id = :bookingId
+        """)
+        .param("bookingId", bookingId)
+        .update();
+    }
 }

@@ -256,6 +256,45 @@ paths:
         '409':
           description: Login already exists
 
+  /api/halls/{hallId}/seats/generate:
+    post:
+      tags:
+        - Seats
+      operationId: generateSeats
+      parameters:
+        - name: hallId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateSeatsRequest'
+
+      responses:
+        '201':
+          description: Seats generated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SeatResponse'
+
+        '400':
+          description: Invalid generation parameters
+
+        '404':
+          description: Hall not found
+
+        '409':
+          description: Some seats already exist
+
   /api/halls/{hallId}/seats:
     get:
       tags:
@@ -769,6 +808,22 @@ components:
         seatNumber:
           type: integer
           minimum: 1
+
+    GenerateSeatsRequest:
+      type: object
+      required:
+        - rows
+        - seatsPerRow
+      properties:
+        rows:
+          type: integer
+          minimum: 1
+          maximum: 100
+
+        seatsPerRow:
+          type: integer
+          minimum: 1
+          maximum: 100
 
     CreateSeatRequest:
       type: object
