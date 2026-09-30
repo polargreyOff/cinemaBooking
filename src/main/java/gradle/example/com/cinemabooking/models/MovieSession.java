@@ -6,20 +6,21 @@ public class MovieSession {
 
     private Long id;
     private Movie movie;
-    private Long hallId;
+    private Hall hall;
     private LocalDateTime startTime;
     private Integer price;
 
+    public MovieSession() {}
     public MovieSession(
             Long id,
             Movie movie,
-            Long hallId,
+            Hall hall,
             LocalDateTime startTime,
             Integer price
     ) {
         this.id = id;
         this.movie = movie;
-        this.hallId = hallId;
+        this.hall = hall;
         this.startTime = startTime;
         this.price = price;
     }
@@ -32,8 +33,8 @@ public class MovieSession {
         return movie;
     }
 
-    public Long getHallId() {
-        return hallId;
+    public Hall getHall() {
+        return hall;
     }
 
     public LocalDateTime getStartTime() {
@@ -42,5 +43,24 @@ public class MovieSession {
 
     public Integer getPrice() {
         return price;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+    public void setHall(Hall hall) {
+        this.hall = hall;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 }

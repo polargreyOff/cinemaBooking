@@ -11,6 +11,56 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(SeatAlreadyBookedException.class)
+    public ResponseEntity<ErrorResponse> handleSeatAlreadyBookedException(SeatAlreadyBookedException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(SeatDoesNotBelongToHallException.class)
+    public ResponseEntity<ErrorResponse> handleSeatDoesNotBelongToHallException(SeatDoesNotBelongToHallException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(SessionAlreadyStartedException.class)
+    public ResponseEntity<ErrorResponse> handleSessionAlreadyStarted(SessionAlreadyStartedException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(SessionHasBookingsException.class)
+    public ResponseEntity<ErrorResponse> handleSessionHasBookingsException(SessionHasBookingsException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+
+    @ExceptionHandler(InvalidSessionTimeException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidSessionTime(
+            InvalidSessionTimeException exception
+    ) {
+
+        ErrorResponse error = ErrorResponse.create(exception, HttpStatus.BAD_REQUEST, exception.getMessage());
+
+        return ResponseEntity
+                .badRequest()
+                .body(error);
+    }
+
+    @ExceptionHandler(SessionTimeConflictException.class)
+    public ResponseEntity<ErrorResponse> handleSessionTimeConflictException(SessionTimeConflictException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
+
+    @ExceptionHandler(MovieSessionNotFound.class)
+    public ResponseEntity<ErrorResponse> handleMovieSessionNotFound(MovieSessionNotFound e) {
+        ErrorResponse response = ErrorResponse.create(e, HttpStatus.NOT_FOUND, e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {
         ErrorResponse response = ErrorResponse.create(e, HttpStatus.UNAUTHORIZED, "Invalid login or password");

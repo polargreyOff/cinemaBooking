@@ -5,6 +5,63 @@ info:
   version: 1.0.0
 
 paths:
+  /api/bookings:
+    post:
+      tags:
+        - Bookings
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        '201':
+          description: Booking created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '404':
+          description: Session or seat not found
+        '409':
+          description: Seat already booked
+
+  /api/bookings/my:
+    get:
+      tags:
+        - Bookings
+      operationId: getMyBookings
+      responses:
+        '200':
+          description: Current user bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BookingResponse'
+
+  /api/bookings/{id}:
+    delete:
+      tags:
+        - Bookings
+      operationId: cancelBooking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Booking cancelled
+        '403':
+          description: Booking belongs to another user
+        '404':
+          description: Booking not found
   /api/sessions:
     get:
       tags:
@@ -494,14 +551,50 @@ paths:
 
 components:
   schemas:
+    CreateBookingRequest:
+      type: object
+      required:
+        - sessionId
+        - seatId
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        seatId:
+          type: integer
+          format: int64
+
+    BookingResponse:
+      type: object
+      required:
+        - id
+        - session
+        - seat
+        - bookingTime
+      properties:
+        id:
+          type: integer
+          format: int64
+
+        session:
+          $ref: '#/components/schemas/SessionResponse'
+
+        seat:
+          $ref: '#/components/schemas/SeatResponse'
+
+        bookingTime:
+          type: string
+          format: date-time
+
     SessionResponse:
       type: object
       required:
         - id
         - movie
-        - hallId
+        - hall
         - startTime
         - price
+        - endTime
       properties:
         id:
           type: integer
@@ -510,9 +603,8 @@ components:
         movie:
           $ref: '#/components/schemas/MovieResponse'
 
-        hallId:
-          type: integer
-          format: int64
+        hall:
+          $ref:  '#/components/schemas/HallResponse'
 
         startTime:
           type: string
@@ -520,6 +612,9 @@ components:
 
         price:
           type: integer
+        endTime:
+          type: string
+          format: date-time
 
     CreateSessionRequest:
       type: object
