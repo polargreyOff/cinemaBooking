@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class BookingService {
     private final BookingRepository bookingRepository;
@@ -62,5 +64,16 @@ public class BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
         return bookingMapper.toBookingResponse(booking);
+    }
+
+    public List<BookingResponse> getMyBookings() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserResponse user = authService.getByLogin(authentication.getName());
+
+        return bookingRepository.findAllByUserId(user.getId())
+            .stream()
+            .map(bookingMapper::toBookingResponse)
+            .toList();
     }
 }

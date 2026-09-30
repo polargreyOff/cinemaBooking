@@ -7,6 +7,8 @@ import gradle.example.com.cinemabooking.services.BookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class BookingController implements BookingsApi {
     private final BookingService bookingService;
@@ -20,5 +22,11 @@ public class BookingController implements BookingsApi {
         BookingResponse bookingResponse = bookingService.createBooking(request);
 
         return ResponseEntity.ok(bookingResponse);
+    }
+
+    @Override
+    public ResponseEntity<List<BookingResponse>> getMyBookings() {
+        List<BookingResponse> response =  bookingService.getMyBookings();
+        return ResponseEntity.ok(response);
     }
 }
