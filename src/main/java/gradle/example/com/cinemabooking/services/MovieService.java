@@ -41,7 +41,7 @@ public class MovieService {
     }
 
     public void delete(Long id) {
-        int deletedRows = movieRepository.deleteById(id);
+        int deletedRows = movieRepository.deleteExistingById(id);
         if (deletedRows <= 0) {
             throw new MovieNotFoundException(id);
         }

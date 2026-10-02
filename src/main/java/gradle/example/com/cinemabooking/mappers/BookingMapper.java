@@ -5,13 +5,14 @@ import gradle.example.com.cinemabooking.models.Booking;
 import gradle.example.com.cinemabooking.models.MovieSession;
 import gradle.example.com.cinemabooking.models.Seat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Component
-public class BookingMapper {
+public class BookingMapper implements RowMapper<Booking> {
     private MovieSessionMapper movieSessionMapper;
     private SeatMapper seatMapper;
 
@@ -25,6 +26,11 @@ public class BookingMapper {
     }
 
     public Booking resultSetToBooking(ResultSet rs, int rowNum) throws SQLException {
+        return mapRow(rs, rowNum);
+    }
+
+    @Override
+    public Booking mapRow(ResultSet rs, int rowNum) throws SQLException {
         MovieSession movieSession = movieSessionMapper.ResultSetToMovieSession(rs, rowNum);
 
         Seat seat = new Seat(

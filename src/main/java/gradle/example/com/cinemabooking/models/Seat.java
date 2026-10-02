@@ -1,10 +1,19 @@
 package gradle.example.com.cinemabooking.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Table("seat")
 public class Seat {
 
+    @Id
     private Long id;
+    @Column("hall_id")
     private Long hallId;
+    @Column("row_number")
     private Integer rowNumber;
+    @Column("seat_number")
     private Integer seatNumber;
 
     public Seat() {}

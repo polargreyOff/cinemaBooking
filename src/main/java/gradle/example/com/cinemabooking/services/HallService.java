@@ -53,7 +53,7 @@ public class HallService {
     }
 
     public void delete(Long id) {
-        int deletedRows = hallRepository.deleteById(id);
+        int deletedRows = hallRepository.deleteExistingById(id);
         if (deletedRows <= 0) {
             throw new HallNotFoundException(id);
         }

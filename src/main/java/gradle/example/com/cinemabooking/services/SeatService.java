@@ -2,7 +2,9 @@ package gradle.example.com.cinemabooking.services;
 
 import gradle.example.com.cinemabooking.exceptions.InvalidSeatException;
 import gradle.example.com.cinemabooking.exceptions.SeatNotFoundException;
+import gradle.example.com.cinemabooking.exceptions.SeatsAlreadyExistException;
 import gradle.example.com.cinemabooking.generated.model.CreateSeatRequest;
+import gradle.example.com.cinemabooking.generated.model.GenerateSeatsRequest;
 import gradle.example.com.cinemabooking.generated.model.SeatResponse;
 import gradle.example.com.cinemabooking.mappers.SeatMapper;
 import gradle.example.com.cinemabooking.models.Seat;
@@ -10,6 +12,7 @@ import gradle.example.com.cinemabooking.repositories.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -52,9 +55,30 @@ public class SeatService {
     }
 
     public void deleteById(Long seatId){
-        int deletedRows = seatRepository.deleteById(seatId);
+        int deletedRows = seatRepository.deleteExistingById(seatId);
         if (deletedRows <= 0) {
             throw new SeatNotFoundException(seatId);
         }
     }
+
+    @Transactional
+    public List<SeatResponse> generateSeats(
+            Long hallId,
+            GenerateSeatsRequest request
+    ) {
+        hallService.getHall(hallId);
+
+        try {
+            seatRepository.generateSeats(
+                    hallId,
+                    request.getRows(),
+                    request.getSeatsPerRow()
+            );
+        } catch (DuplicateKeyException ex) {
+            throw new SeatsAlreadyExistException();
+        }
+
+        return getByHallId(hallId);
+    }
+
 }

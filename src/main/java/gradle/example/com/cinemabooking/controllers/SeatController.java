@@ -2,10 +2,12 @@ package gradle.example.com.cinemabooking.controllers;
 
 import gradle.example.com.cinemabooking.generated.api.SeatsApi;
 import gradle.example.com.cinemabooking.generated.model.CreateSeatRequest;
+import gradle.example.com.cinemabooking.generated.model.GenerateSeatsRequest;
 import gradle.example.com.cinemabooking.generated.model.SeatResponse;
 import gradle.example.com.cinemabooking.models.Seat;
 import gradle.example.com.cinemabooking.services.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,5 +37,11 @@ public class SeatController implements SeatsApi {
     public ResponseEntity<Void> deleteSeat(Long seatId) {
         seatService.deleteById(seatId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<List<SeatResponse>> generateSeats(Long hallId, GenerateSeatsRequest request) {
+        List<SeatResponse> response = seatService.generateSeats(hallId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

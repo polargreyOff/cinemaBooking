@@ -10,6 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(SeatsAlreadyExistException.class)
+    public ResponseEntity<ErrorResponse> handleSeatsAlreadyExist(SeatsAlreadyExistException ex) {
+        ErrorResponse response = ErrorResponse.create(ex, HttpStatus.CONFLICT, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+    }
 
     @ExceptionHandler(BookingCancellationUnavailableException.class)
     public ResponseEntity<ErrorResponse> handleBookingCancellationUnavailable(BookingCancellationUnavailableException ex) {

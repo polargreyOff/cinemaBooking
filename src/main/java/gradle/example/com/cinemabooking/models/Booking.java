@@ -1,14 +1,34 @@
 package gradle.example.com.cinemabooking.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 import java.time.LocalDateTime;
 
+@Table("booking")
 public class Booking {
 
+    @Id
     private Long id;
+    @Column("user_id")
     private Long userId;
+    @Column("session_id")
+    private Long sessionId;
+    @Column("seat_id")
+    private Long seatId;
+    @Transient
     private MovieSession session;
+    @Transient
     private Seat seat;
+    @ReadOnlyProperty
+    @Column("booking_time")
     private LocalDateTime bookingTime;
+
+    public Booking() {
+    }
 
     public Booking(
             Long id,
@@ -21,6 +41,16 @@ public class Booking {
         this.userId = userId;
         this.session = session;
         this.seat = seat;
+        this.sessionId = session == null ? null : session.getId();
+        this.seatId = seat == null ? null : seat.getId();
+        this.bookingTime = bookingTime;
+    }
+
+    public Booking(Long id, Long userId, Long sessionId, Long seatId, LocalDateTime bookingTime) {
+        this.id = id;
+        this.userId = userId;
+        this.sessionId = sessionId;
+        this.seatId = seatId;
         this.bookingTime = bookingTime;
     }
 
@@ -42,5 +72,13 @@ public class Booking {
 
     public LocalDateTime getBookingTime() {
         return bookingTime;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public Long getSeatId() {
+        return seatId;
     }
 }

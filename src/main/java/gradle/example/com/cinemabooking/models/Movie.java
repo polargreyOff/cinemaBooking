@@ -1,10 +1,17 @@
 package gradle.example.com.cinemabooking.models;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Table("movie")
 public class Movie {
 
+    @Id
     private Long id;
     private String title;
     private int duration;
+    @Column("age_rating")
     private String age_rating;
     private String description;
 
