@@ -36,4 +36,11 @@ public class BookingController implements BookingsApi {
 
         return ResponseEntity.noContent().build();
     }
+
+    @Override
+    public ResponseEntity<BookingResponse> getBookingById(Long id) {
+        BookingResponse response = bookingService.getBooking(id);
+
+        return ResponseEntity.ok(response);
+    }
 }

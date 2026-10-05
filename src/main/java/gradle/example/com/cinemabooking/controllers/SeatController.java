@@ -4,6 +4,7 @@ import gradle.example.com.cinemabooking.generated.api.SeatsApi;
 import gradle.example.com.cinemabooking.generated.model.CreateSeatRequest;
 import gradle.example.com.cinemabooking.generated.model.GenerateSeatsRequest;
 import gradle.example.com.cinemabooking.generated.model.SeatResponse;
+import gradle.example.com.cinemabooking.generated.model.SessionSeatResponse;
 import gradle.example.com.cinemabooking.models.Seat;
 import gradle.example.com.cinemabooking.services.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,4 +16,10 @@ class MovieSessionRepositoryTest {
         assertDoesNotThrow(() -> repository.findAll(null, null, 0, 20, null, null));
         assertDoesNotThrow(() -> repository.count(null, null));
     }
+
+    @Test
+    void supportsPaginationAndAllowedSortFields() {
+        assertDoesNotThrow(() -> repository.findAll(null, null, 1, 10, "price", "desc"));
+        assertDoesNotThrow(() -> repository.findAll(null, null, 0, 10, "movieTitle", "asc"));
+    }
 }

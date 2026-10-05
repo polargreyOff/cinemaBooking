@@ -44,6 +44,29 @@ paths:
                   $ref: '#/components/schemas/BookingResponse'
 
   /api/bookings/{id}:
+    get:
+      tags:
+        - Bookings
+      operationId: getBookingById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Booking found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingResponse'
+        '403':
+          description: Booking belongs to another user
+        '404':
+          description: Booking not found
+
     delete:
       tags:
         - Bookings
@@ -187,6 +210,32 @@ paths:
           description: Session deleted
         '404':
           description: Session not found
+  /api/sessions/{sessionId}/seats:
+    get:
+      tags:
+        - Sessions
+      operationId: getSessionSeats
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+      responses:
+        '200':
+          description: Seats with availability for session
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SessionSeatResponse'
+
+        '404':
+          description: Session not found
+
   /api/auth/logout:
     post:
       tags:
@@ -590,6 +639,26 @@ paths:
 
 components:
   schemas:
+    SessionSeatResponse:
+      type: object
+      required:
+        - id
+        - rowNumber
+        - seatNumber
+        - available
+      properties:
+        id:
+          type: integer
+          format: int64
+
+        rowNumber:
+          type: integer
+
+        seatNumber:
+          type: integer
+
+        available:
+          type: boolean
     CreateBookingRequest:
       type: object
       required:

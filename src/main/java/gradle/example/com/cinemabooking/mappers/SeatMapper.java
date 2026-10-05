@@ -2,7 +2,9 @@ package gradle.example.com.cinemabooking.mappers;
 
 import gradle.example.com.cinemabooking.generated.model.CreateSeatRequest;
 import gradle.example.com.cinemabooking.generated.model.SeatResponse;
+import gradle.example.com.cinemabooking.generated.model.SessionSeatResponse;
 import gradle.example.com.cinemabooking.models.Seat;
+import gradle.example.com.cinemabooking.models.SessionSeat;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,5 +32,14 @@ public class SeatMapper {
         seat.setSeatNumber(createSeatRequest.getSeatNumber());
         seat.setRowNumber(createSeatRequest.getRowNumber());
         return seat;
+    }
+
+    public SessionSeatResponse toSessionSeatResponse(SessionSeat seat) {
+        return new SessionSeatResponse(
+                seat.id(),
+                seat.rowNumber(),
+                seat.seatNumber(),
+                seat.available()
+        );
     }
 }

@@ -6,8 +6,10 @@ import gradle.example.com.cinemabooking.exceptions.SeatsAlreadyExistException;
 import gradle.example.com.cinemabooking.generated.model.CreateSeatRequest;
 import gradle.example.com.cinemabooking.generated.model.GenerateSeatsRequest;
 import gradle.example.com.cinemabooking.generated.model.SeatResponse;
+import gradle.example.com.cinemabooking.generated.model.SessionSeatResponse;
 import gradle.example.com.cinemabooking.mappers.SeatMapper;
 import gradle.example.com.cinemabooking.models.Seat;
+import gradle.example.com.cinemabooking.repositories.MovieSessionRepository;
 import gradle.example.com.cinemabooking.repositories.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -21,12 +23,18 @@ public class SeatService {
     private SeatRepository seatRepository;
     private HallService hallService;
     private SeatMapper seatMapper;
+    private MovieSessionRepository movieSessionRepository;
 
     @Autowired
-    public SeatService(SeatRepository seatRepository,  HallService hallService, SeatMapper seatMapper) {
+    public SeatService(
+            SeatRepository seatRepository,
+            HallService hallService,
+            SeatMapper seatMapper,
+            MovieSessionRepository movieSessionRepository) {
         this.seatRepository = seatRepository;
         this.hallService = hallService;
         this.seatMapper = seatMapper;
+        this.movieSessionRepository = movieSessionRepository;
     }
 
     public List<SeatResponse> getByHallId(Long hallId){
@@ -59,6 +67,15 @@ public class SeatService {
         if (deletedRows <= 0) {
             throw new SeatNotFoundException(seatId);
         }
+    }
+
+    public List<SessionSeatResponse> getSessionSeats(Long sessionId) {
+        movieSessionRepository.findById(sessionId);
+
+        return seatRepository.findSeatsBySessionId(sessionId)
+                .stream()
+                .map(seatMapper::toSessionSeatResponse)
+                .toList();
     }
 
     @Transactional

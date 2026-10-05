@@ -65,6 +65,8 @@ public class BookingService {
         return bookingMapper.toBookingResponse(booking);
     }
 
+
+
     public List<BookingResponse> getMyBookings() {
         UserResponse user = getCurrentUser();
 
@@ -72,6 +74,20 @@ public class BookingService {
             .stream()
             .map(bookingMapper::toBookingResponse)
             .toList();
+    }
+
+    public BookingResponse getBooking(Long id) {
+        UserResponse user = getCurrentUser();
+
+        Booking booking = bookingRepository.findById(id).orElseThrow(
+                () -> new BookingNotFoundException(id)
+        );
+
+        if (!booking.getId().equals(user.getId())) {
+            throw new BookingAccessDeniedException();
+        }
+
+        return bookingMapper.toBookingResponse(booking);
     }
 
     public void cancelBooking(Long bookingId) {
