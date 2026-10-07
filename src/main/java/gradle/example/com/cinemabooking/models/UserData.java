@@ -11,17 +11,19 @@ public class UserData {
     private String name;
     private String login;
     private String phone;
+    private Role role;
     @Column("password_hash")
     private String password_hash;
 
     public UserData() {}
 
-    public UserData(Long id, String name, String login, String phone, String password_hash) {
+    public UserData(Long id, String name, String login, String phone, String password_hash, Role role) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.phone = phone;
         this.password_hash = password_hash;
+        this.role = role;
     }
 
     public Long getId() {
@@ -55,5 +57,11 @@ public class UserData {
     }
     public void setPassword_hash(String password_hash) {
         this.password_hash = password_hash;
+    }
+    public  Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

@@ -173,6 +173,41 @@ paths:
           description: Movie or hall not found
 
   /api/sessions/{id}:
+    patch:
+      tags:
+        - Sessions
+      operationId: updateSession
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSessionRequest'
+
+      responses:
+        '200':
+          description: Session updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+
+        '400':
+          description: Invalid session data
+
+        '404':
+          description: Session, movie or hall not found
+
+        '409':
+          description: Session has bookings or conflicts with another session
     get:
       tags:
         - Sessions
@@ -747,6 +782,24 @@ components:
         price:
           type: integer
           minimum: 1
+    UpdateSessionRequest:
+      type: object
+      properties:
+        movieId:
+          type: integer
+          format: int64
+
+        hallId:
+          type: integer
+          format: int64
+
+        startTime:
+          type: string
+          format: date-time
+
+        price:
+          type: integer
+          minimum: 1
 
     SessionPageResponse:
       type: object
@@ -947,6 +1000,11 @@ components:
           type: string
         phone:
           type: string
+        role:
+          type: string
+          enum:
+            - USER
+            - ADMIN
     LoginRequest:
       type: object
       required:

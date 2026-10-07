@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/changes/004-alter_user_data.sql
   - include:
       file: db/changelog/changes/005-alter_booking.sql
+  - include:
+      file: db/changelog/changes/006-add_roles.sql

@@ -1,6 +1,7 @@
 package gradle.example.com.cinemabooking.mappers;
 
 import gradle.example.com.cinemabooking.generated.model.UserResponse;
+import gradle.example.com.cinemabooking.models.Role;
 import gradle.example.com.cinemabooking.models.UserData;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,9 @@ public class UserMapper {
         user.setName(userResponse.getName());
         user.setLogin(userResponse.getLogin());
         user.setPhone(userResponse.getPhone());
+        user.setRole(
+                Role.valueOf(userResponse.getRole().name())
+        );
         return user;
     }
 
@@ -21,6 +25,9 @@ public class UserMapper {
         userResponse.setName(userData.getName());
         userResponse.setLogin(userData.getLogin());
         userResponse.setPhone(userData.getPhone());
+        userResponse.setRole(
+                UserResponse.RoleEnum.fromValue(userData.getRole().name())
+        );
         return userResponse;
     }
 }

@@ -35,15 +35,78 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/register",
-                                "/api/auth/login",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**",
+                                "/api/auth/login"
+                        ).permitAll()
+
+                        // Public GET
+                        .requestMatchers(
+                                HttpMethod.GET,
                                 "/api/movies/**",
                                 "/api/halls/**",
                                 "/api/seats/**",
-                                "/api/auth/logout"
+                                "/api/sessions/**"
                         ).permitAll()
+
+                        // Movies - admin
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/movies/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/movies/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/movies/**"
+                        ).hasRole("ADMIN")
+
+                        // Halls - admin
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/halls/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/halls/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/halls/**"
+                        ).hasRole("ADMIN")
+
+                        // Seats - admin
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/halls/*/seats/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/seats/**"
+                        ).hasRole("ADMIN")
+
+                        // Sessions - admin
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/sessions/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.PATCH,
+                                "/api/sessions/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/sessions/**"
+                        ).hasRole("ADMIN")
+
+                        // Все остальные ручки требуют логин
                         .anyRequest().authenticated()
                 )
                 .cors(Customizer.withDefaults())

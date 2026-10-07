@@ -2,10 +2,7 @@ package gradle.example.com.cinemabooking.controllers;
 
 
 import gradle.example.com.cinemabooking.generated.api.SessionsApi;
-import gradle.example.com.cinemabooking.generated.model.CreateSessionRequest;
-import gradle.example.com.cinemabooking.generated.model.SessionPageResponse;
-import gradle.example.com.cinemabooking.generated.model.SessionResponse;
-import gradle.example.com.cinemabooking.generated.model.SessionSeatResponse;
+import gradle.example.com.cinemabooking.generated.model.*;
 import gradle.example.com.cinemabooking.services.MovieSessionService;
 import gradle.example.com.cinemabooking.services.SeatService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +60,13 @@ public class MovieSessionController implements SessionsApi {
     @Override
     public ResponseEntity<List<SessionSeatResponse>> getSessionSeats(Long sessionId) {
         return ResponseEntity.ok(seatService.getSessionSeats(sessionId));
+    }
+
+    @Override
+    public ResponseEntity<SessionResponse> updateSession(
+            Long id,
+            UpdateSessionRequest request
+    ) {
+        return ResponseEntity.ok(movieSessionService.patchSession(id, request));
     }
 }

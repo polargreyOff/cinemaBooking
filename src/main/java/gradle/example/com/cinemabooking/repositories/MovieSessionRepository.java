@@ -32,8 +32,28 @@ public interface MovieSessionRepository extends
         """)
     Integer countOverlaps(Long hallId, LocalDateTime startTime, LocalDateTime endTime);
 
+    @Query("""
+        SELECT COUNT(s.id)
+        FROM session s
+        JOIN movie m ON s.movie_id = m.id
+        WHERE s.hall_id = :hallId
+          AND s.id <> :sessionId
+          AND :startTime < (s.start_time + m.duration * INTERVAL '1 minute')
+          AND :endTime > s.start_time
+        """)
+    Integer countOverlapsExcludingSession(
+            Long hallId,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            Long sessionId
+    );
+
     default Long save(Long movieId, Long hallId, LocalDateTime startTime, Integer price) {
         return save(new MovieSession(null, movieId, hallId, startTime, price)).getId();
+    }
+
+    default MovieSession patch(MovieSession request) {
+        return save(request);
     }
 
     @Query("SELECT COUNT(id) FROM booking WHERE session_id = :id")

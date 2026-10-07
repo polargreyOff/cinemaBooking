@@ -4,11 +4,13 @@ import gradle.example.com.cinemabooking.exceptions.*;
 import gradle.example.com.cinemabooking.generated.model.CreateSessionRequest;
 import gradle.example.com.cinemabooking.generated.model.SessionPageResponse;
 import gradle.example.com.cinemabooking.generated.model.SessionResponse;
+import gradle.example.com.cinemabooking.generated.model.UpdateSessionRequest;
 import gradle.example.com.cinemabooking.mappers.MovieSessionMapper;
 import gradle.example.com.cinemabooking.models.MovieSession;
 import gradle.example.com.cinemabooking.repositories.MovieSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -105,5 +107,20 @@ public class MovieSessionService {
     public void deleteSession(Long id) {
         sessionValidationService.validateDelete(id);
         movieSessionRepository.deleteById(id);
+    }
+
+    @Transactional
+    public SessionResponse patchSession(Long id, UpdateSessionRequest request) {
+        MovieSession session = movieSessionRepository.findById(id).orElseThrow(
+                () -> {throw new MovieSessionNotFound(id);}
+        );
+        UpdateSessionRequest body = sessionValidationService.validatePatchBooking(session, request);
+        session.setMovieId(body.getMovieId());
+        session.setHallId(body.getHallId());
+        session.setStartTime(body.getStartTime());
+        session.setPrice(body.getPrice());
+
+        MovieSession saved = movieSessionRepository.patch(session);
+        return sessionMapper.toSessionResponse(saved);
     }
 }

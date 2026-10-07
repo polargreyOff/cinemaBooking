@@ -5,6 +5,7 @@ import gradle.example.com.cinemabooking.exceptions.UserNotFound;
 import gradle.example.com.cinemabooking.generated.model.RegisterRequest;
 import gradle.example.com.cinemabooking.generated.model.UserResponse;
 import gradle.example.com.cinemabooking.mappers.UserMapper;
+import gradle.example.com.cinemabooking.models.Role;
 import gradle.example.com.cinemabooking.models.UserData;
 import gradle.example.com.cinemabooking.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,8 @@ public class AuthService {
                 registerRequest.getName(),
                 registerRequest.getLogin(),
                 registerRequest.getPhone(),
-                password_hash
+                password_hash,
+                Role.USER
         );
 
         try {
