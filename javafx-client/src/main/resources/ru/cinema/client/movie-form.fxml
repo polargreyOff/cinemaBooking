@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="ru.cinema.client.ui.MovieFormController" hgap="10" vgap="10" styleClass="form" stylesheets="@style.css">
+  <Label text="Название" GridPane.rowIndex="0" GridPane.columnIndex="0"/><TextField fx:id="title" promptText="Название фильма" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+  <Label text="Длительность, мин" GridPane.rowIndex="1" GridPane.columnIndex="0"/><TextField fx:id="duration" promptText="Например, 120" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+  <Label text="Возрастной рейтинг" GridPane.rowIndex="2" GridPane.columnIndex="0"/><TextField fx:id="rating" promptText="Например, 12+" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+  <Label text="Описание" GridPane.rowIndex="3" GridPane.columnIndex="0"/><TextArea fx:id="description" prefRowCount="4" wrapText="true" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+</GridPane>
+
