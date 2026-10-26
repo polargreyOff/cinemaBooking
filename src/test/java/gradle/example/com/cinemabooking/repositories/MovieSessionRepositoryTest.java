@@ -1,10 +1,13 @@
 package gradle.example.com.cinemabooking.repositories;
 
+import gradle.example.com.cinemabooking.models.MovieSession;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class MovieSessionRepositoryTest {
@@ -12,14 +15,20 @@ class MovieSessionRepositoryTest {
     private MovieSessionRepository repository;
 
     @Test
-    void supportsMissingOptionalFiltersAndSorting() {
-        assertDoesNotThrow(() -> repository.findAll(null, null, 0, 20, null, null));
-        assertDoesNotThrow(() -> repository.count(null, null));
+    void readsSessionTableColumns() {
+        MovieSession session = repository.findAll().getFirst();
+        assertNotNull(session.getId());
+        assertNotNull(session.getMovieId());
+        assertNotNull(session.getHallId());
+        assertNotNull(session.getStartTime());
+        assertNotNull(session.getPrice());
     }
 
     @Test
-    void supportsPaginationAndAllowedSortFields() {
-        assertDoesNotThrow(() -> repository.findAll(null, null, 1, 10, "price", "desc"));
-        assertDoesNotThrow(() -> repository.findAll(null, null, 0, 10, "movieTitle", "asc"));
+    void filtersByHallIdWithoutJoiningOtherTables() {
+        MovieSession session = repository.findAll().getFirst();
+        assertTrue(repository.findByHallId(session.getHallId()).stream()
+                .anyMatch(item -> item.getId().equals(session.getId())));
+        assertEquals(session.getMovieId(), repository.findById(session.getId()).orElseThrow().getMovieId());
     }
 }

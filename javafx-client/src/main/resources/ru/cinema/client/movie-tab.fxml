@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="ru.cinema.client.ui.MovieTabController">
+  <top><VBox spacing="8" styleClass="toolbar">
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <TextField fx:id="movieSearch" promptText="Поиск по названию и описанию" HBox.hgrow="ALWAYS"/>
+      <ComboBox fx:id="ratingFilter" promptText="Возрастной рейтинг" prefWidth="165"/>
+      <ComboBox fx:id="durationFilter" prefWidth="165"/>
+      <Button text="Обновить" onAction="#refresh"/>
+    </HBox>
+    <HBox spacing="8">
+      <Button fx:id="addMovieButton" text="Добавить фильм" onAction="#addMovie" styleClass="primary"/>
+      <Button fx:id="editMovieButton" text="Изменить" onAction="#editMovie"/>
+      <Button fx:id="deleteMovieButton" text="Удалить" onAction="#deleteMovie" styleClass="danger"/>
+      <Button text="Экспорт CSV" onAction="#exportMovies"/>
+    </HBox>
+  </VBox></top>
+  <center><TableView fx:id="movieTable">
+    <columns>
+      <TableColumn fx:id="titleColumn" text="Название" prefWidth="260"/>
+      <TableColumn fx:id="durationColumn" text="Минут" prefWidth="90"/>
+      <TableColumn fx:id="ratingColumn" text="Рейтинг" prefWidth="90"/>
+      <TableColumn fx:id="descriptionColumn" text="Описание" prefWidth="550"/>
+    </columns>
+  </TableView></center>
+</BorderPane>

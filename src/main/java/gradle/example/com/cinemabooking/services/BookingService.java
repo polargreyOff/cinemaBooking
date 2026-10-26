@@ -47,7 +47,8 @@ public class BookingService {
         SessionResponse session = movieSessionService.getById(request.getSessionId());
         SeatResponse seat = seatService.getById(request.getSeatId());
 
-        bookingValidationService.validateCreateBooking(session, seat);
+        bookingValidationService.validateCreateBooking(
+                session, seat, bookingRepository.existsBySessionIdAndSeatId(session.getId(), seat.getId()));
 
         Long bookingId;
         try {
@@ -62,20 +63,22 @@ public class BookingService {
 
         Booking booking = bookingRepository.findById(bookingId).orElseThrow();
 
-        return bookingMapper.toBookingResponse(booking);
+        return bookingMapper.toBookingResponse(booking, session, seat);
     }
 
 
 
+    @Transactional(readOnly = true)
     public List<BookingResponse> getMyBookings() {
         UserResponse user = getCurrentUser();
 
-        return bookingRepository.findAllByUserId(user.getId())
+        return bookingRepository.findAllByUserIdOrderByBookingTimeDesc(user.getId())
             .stream()
-            .map(bookingMapper::toBookingResponse)
+            .map(this::toResponse)
             .toList();
     }
 
+    @Transactional(readOnly = true)
     public BookingResponse getBooking(Long id) {
         UserResponse user = getCurrentUser();
 
@@ -83,19 +86,28 @@ public class BookingService {
                 () -> new BookingNotFoundException(id)
         );
 
-        if (!booking.getId().equals(user.getId())) {
+        if (!booking.getUserId().equals(user.getId())) {
             throw new BookingAccessDeniedException();
         }
 
-        return bookingMapper.toBookingResponse(booking);
+        return toResponse(booking);
     }
 
+    @Transactional
     public void cancelBooking(Long bookingId) {
         UserResponse user = getCurrentUser();
-
-        bookingValidationService.validateDeleteBooking(user, bookingId);
-
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new BookingNotFoundException(bookingId));
+        if (!booking.getUserId().equals(user.getId())) throw new BookingAccessDeniedException();
+        SessionResponse session = movieSessionService.getById(booking.getSessionId());
+        bookingValidationService.validateDeleteBooking(user, booking, session);
         bookingRepository.deleteById(bookingId);
+    }
+
+    private BookingResponse toResponse(Booking booking) {
+        SessionResponse session = movieSessionService.getById(booking.getSessionId());
+        SeatResponse seat = seatService.getById(booking.getSeatId());
+        return bookingMapper.toBookingResponse(booking, session, seat);
     }
 
     private UserResponse getCurrentUser() {

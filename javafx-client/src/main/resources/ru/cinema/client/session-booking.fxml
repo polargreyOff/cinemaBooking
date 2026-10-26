@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="ru.cinema.client.ui.SessionBookingController" spacing="8" alignment="CENTER_LEFT">
+  <Label text="Бронирование выбранного сеанса:"/>
+  <ComboBox fx:id="bookingSeat" promptText="Свободное место" prefWidth="190"/>
+  <Button fx:id="bookButton" text="Забронировать" onAction="#createBooking" styleClass="primary"/>
+</HBox>

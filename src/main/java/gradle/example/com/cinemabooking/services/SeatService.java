@@ -9,7 +9,6 @@ import gradle.example.com.cinemabooking.generated.model.SeatResponse;
 import gradle.example.com.cinemabooking.generated.model.SessionSeatResponse;
 import gradle.example.com.cinemabooking.mappers.SeatMapper;
 import gradle.example.com.cinemabooking.models.Seat;
-import gradle.example.com.cinemabooking.repositories.MovieSessionRepository;
 import gradle.example.com.cinemabooking.repositories.SeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,24 +16,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SeatService {
     private SeatRepository seatRepository;
     private HallService hallService;
     private SeatMapper seatMapper;
-    private MovieSessionRepository movieSessionRepository;
+    private MovieSessionService movieSessionService;
+    private BookingQueryService bookingQueryService;
 
     @Autowired
     public SeatService(
             SeatRepository seatRepository,
             HallService hallService,
             SeatMapper seatMapper,
-            MovieSessionRepository movieSessionRepository) {
+            MovieSessionService movieSessionService,
+            BookingQueryService bookingQueryService) {
         this.seatRepository = seatRepository;
         this.hallService = hallService;
         this.seatMapper = seatMapper;
-        this.movieSessionRepository = movieSessionRepository;
+        this.movieSessionService = movieSessionService;
+        this.bookingQueryService = bookingQueryService;
     }
 
     public List<SeatResponse> getByHallId(Long hallId){
@@ -69,12 +72,13 @@ public class SeatService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<SessionSeatResponse> getSessionSeats(Long sessionId) {
-        movieSessionRepository.findById(sessionId);
-
-        return seatRepository.findSeatsBySessionId(sessionId)
+        Long hallId = movieSessionService.getById(sessionId).getHall().getId();
+        Set<Long> bookedSeatIds = bookingQueryService.bookedSeatIds(sessionId);
+        return seatRepository.findByHallId(hallId)
                 .stream()
-                .map(seatMapper::toSessionSeatResponse)
+                .map(seat -> seatMapper.toSessionSeatResponse(seat, !bookedSeatIds.contains(seat.getId())))
                 .toList();
     }
 

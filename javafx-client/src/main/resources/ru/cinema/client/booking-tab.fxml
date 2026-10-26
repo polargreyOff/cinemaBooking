@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="ru.cinema.client.ui.BookingTabController">
+  <top><VBox spacing="8" styleClass="toolbar">
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <Button fx:id="refreshBookingsButton" text="Обновить мои бронирования" onAction="#refreshBookings"/>
+      <Button fx:id="cancelBookingButton" text="Отменить выбранное" onAction="#cancelBooking" styleClass="danger"/>
+      <Label fx:id="bookingCount" text="Войдите, чтобы увидеть свои бронирования"/>
+    </HBox>
+  </VBox></top>
+  <center><TableView fx:id="bookingTable">
+    <columns>
+      <TableColumn fx:id="bookingMovieColumn" text="Фильм" prefWidth="230"/>
+      <TableColumn fx:id="bookingHallColumn" text="Зал" prefWidth="90"/>
+      <TableColumn fx:id="bookingSessionTimeColumn" text="Начало сеанса" prefWidth="180"/>
+      <TableColumn fx:id="bookingSeatColumn" text="Место" prefWidth="170"/>
+      <TableColumn fx:id="bookingPriceColumn" text="Цена" prefWidth="100"/>
+      <TableColumn fx:id="bookingTimeColumn" text="Забронировано" prefWidth="180"/>
+    </columns>
+  </TableView></center>
+</BorderPane>

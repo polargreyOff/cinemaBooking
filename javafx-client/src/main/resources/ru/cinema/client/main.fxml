@@ -14,88 +14,10 @@
   </VBox></top>
   <center><TabPane tabClosingPolicy="UNAVAILABLE">
     <tabs>
-      <Tab text="Фильмы"><BorderPane>
-        <top><VBox spacing="8" styleClass="toolbar">
-          <HBox spacing="8" alignment="CENTER_LEFT">
-            <TextField fx:id="movieSearch" promptText="Поиск по названию и описанию" HBox.hgrow="ALWAYS"/>
-            <ComboBox fx:id="ratingFilter" promptText="Возрастной рейтинг" prefWidth="165"/>
-            <ComboBox fx:id="durationFilter" prefWidth="165"/>
-            <Button text="Обновить" onAction="#refresh"/>
-          </HBox>
-          <HBox spacing="8">
-            <Button fx:id="addMovieButton" text="Добавить фильм" onAction="#addMovie" styleClass="primary"/>
-            <Button fx:id="editMovieButton" text="Изменить" onAction="#editMovie"/>
-            <Button fx:id="deleteMovieButton" text="Удалить" onAction="#deleteMovie" styleClass="danger"/>
-            <Button text="Экспорт CSV" onAction="#exportMovies"/>
-          </HBox>
-        </VBox></top>
-        <center><TableView fx:id="movieTable">
-          <columns>
-            <TableColumn fx:id="titleColumn" text="Название" prefWidth="260"/>
-            <TableColumn fx:id="durationColumn" text="Минут" prefWidth="90"/>
-            <TableColumn fx:id="ratingColumn" text="Рейтинг" prefWidth="90"/>
-            <TableColumn fx:id="descriptionColumn" text="Описание" prefWidth="550"/>
-          </columns>
-        </TableView></center>
-      </BorderPane></Tab>
-      <Tab text="Сеансы и залы"><BorderPane>
-        <top><VBox spacing="8" styleClass="toolbar">
-          <HBox spacing="8" alignment="CENTER_LEFT">
-            <Label text="Фильм:"/><ComboBox fx:id="sessionMovieFilter" prefWidth="260"/>
-            <Label text="Зал:"/><ComboBox fx:id="sessionHallFilter" prefWidth="160"/>
-            <Button text="Обновить" onAction="#refresh"/>
-            <Label fx:id="sessionCount" text=""/>
-          </HBox>
-          <HBox spacing="8">
-            <Button fx:id="addSessionButton" text="Добавить сеанс" onAction="#addSession" styleClass="primary"/>
-            <Button fx:id="editSessionButton" text="Изменить" onAction="#editSession"/>
-            <Button fx:id="deleteSessionButton" text="Удалить" onAction="#deleteSession" styleClass="danger"/>
-          </HBox>
-        </VBox></top>
-        <center><TableView fx:id="sessionTable">
-          <columns>
-            <TableColumn fx:id="sessionMovieColumn" text="Фильм" prefWidth="280"/>
-            <TableColumn fx:id="sessionHallColumn" text="Зал" prefWidth="100"/>
-            <TableColumn fx:id="sessionTimeColumn" text="Начало" prefWidth="190"/>
-            <TableColumn fx:id="sessionEndColumn" text="Конец" prefWidth="190"/>
-            <TableColumn fx:id="sessionPriceColumn" text="Цена" prefWidth="120"/>
-          </columns>
-        </TableView></center>
-        <right><VBox spacing="8" styleClass="toolbar" prefWidth="230">
-          <Label text="Залы" styleClass="section-title"/>
-          <TableView fx:id="hallTable" VBox.vgrow="ALWAYS">
-            <columns><TableColumn fx:id="hallNumberColumn" text="Номер зала" prefWidth="190"/></columns>
-          </TableView>
-          <Button fx:id="addHallButton" text="Добавить зал" onAction="#addHall" styleClass="primary" maxWidth="Infinity"/>
-          <Button fx:id="editHallButton" text="Изменить зал" onAction="#editHall" maxWidth="Infinity"/>
-          <Button fx:id="deleteHallButton" text="Удалить зал" onAction="#deleteHall" styleClass="danger" maxWidth="Infinity"/>
-        </VBox></right>
-      </BorderPane></Tab>
-      <Tab text="Бронирования"><BorderPane>
-        <top><VBox spacing="8" styleClass="toolbar">
-          <Label text="Выберите сеанс и свободное место. Для бронирования войдите в учётную запись."/>
-          <HBox spacing="8" alignment="CENTER_LEFT">
-            <ComboBox fx:id="bookingSession" promptText="Сеанс" prefWidth="510" HBox.hgrow="ALWAYS"/>
-            <ComboBox fx:id="bookingSeat" promptText="Свободное место" prefWidth="190"/>
-            <Button fx:id="bookButton" text="Забронировать" onAction="#createBooking" styleClass="primary"/>
-          </HBox>
-          <HBox spacing="8" alignment="CENTER_LEFT">
-            <Button fx:id="refreshBookingsButton" text="Обновить мои бронирования" onAction="#refreshBookings"/>
-            <Button fx:id="cancelBookingButton" text="Отменить выбранное" onAction="#cancelBooking" styleClass="danger"/>
-            <Label fx:id="bookingCount" text="Войдите, чтобы увидеть свои бронирования"/>
-          </HBox>
-        </VBox></top>
-        <center><TableView fx:id="bookingTable">
-          <columns>
-            <TableColumn fx:id="bookingMovieColumn" text="Фильм" prefWidth="230"/>
-            <TableColumn fx:id="bookingHallColumn" text="Зал" prefWidth="90"/>
-            <TableColumn fx:id="bookingSessionTimeColumn" text="Начало сеанса" prefWidth="180"/>
-            <TableColumn fx:id="bookingSeatColumn" text="Место" prefWidth="170"/>
-            <TableColumn fx:id="bookingPriceColumn" text="Цена" prefWidth="100"/>
-            <TableColumn fx:id="bookingTimeColumn" text="Забронировано" prefWidth="180"/>
-          </columns>
-        </TableView></center>
-      </BorderPane></Tab>      <Tab text="Статистика"><VBox spacing="12" styleClass="stats">
+      <Tab text="Фильмы"><fx:include fx:id="movieTab" source="movie-tab.fxml"/></Tab>
+      <Tab text="Сеансы и залы"><fx:include fx:id="sessionTab" source="session-tab.fxml"/></Tab>
+      <Tab text="Бронирования"><fx:include fx:id="bookingTab" source="booking-tab.fxml"/></Tab>
+      <Tab text="Статистика"><VBox spacing="12" styleClass="stats">
         <Label text="Показатели по всем загруженным фильмам" styleClass="section-title"/>
         <Label fx:id="statsLabel" text="Данные загружаются..."/>
       </VBox></Tab>
@@ -103,6 +25,3 @@
   </TabPane></center>
   <bottom><Label fx:id="statusLabel" text="Подключение..." styleClass="status"/></bottom>
 </BorderPane>
-
-
-

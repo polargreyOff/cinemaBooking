@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml" fx:controller="ru.cinema.client.ui.HallPaneController" spacing="8" styleClass="toolbar" prefWidth="230">
+  <Label text="Залы" styleClass="section-title"/>
+  <TableView fx:id="hallTable" VBox.vgrow="ALWAYS">
+    <columns><TableColumn fx:id="hallNumberColumn" text="Номер зала" prefWidth="190"/></columns>
+  </TableView>
+  <Button fx:id="addHallButton" text="Добавить зал" onAction="#addHall" styleClass="primary" maxWidth="Infinity"/>
+  <Button fx:id="editHallButton" text="Изменить зал" onAction="#editHall" maxWidth="Infinity"/>
+  <Button fx:id="deleteHallButton" text="Удалить зал" onAction="#deleteHall" styleClass="danger" maxWidth="Infinity"/>
+</VBox>

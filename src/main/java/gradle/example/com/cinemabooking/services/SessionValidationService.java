@@ -14,24 +14,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.function.Consumer;
 
 @Service
 public class SessionValidationService {
     private final MovieService movieService;
     private final HallService hallService;
     private final MovieSessionRepository movieSessionRepository;
+    private final BookingQueryService bookingQueryService;
 
 
     @Autowired
     public SessionValidationService(
             MovieService movieService,
             HallService hallService,
-            MovieSessionRepository movieSessionRepository
+            MovieSessionRepository movieSessionRepository,
+            BookingQueryService bookingQueryService
     ) {
         this.movieService = movieService;
         this.hallService = hallService;
         this.movieSessionRepository = movieSessionRepository;
+        this.bookingQueryService = bookingQueryService;
     }
 
     public void validateDelete(Long id) {
@@ -39,12 +41,12 @@ public class SessionValidationService {
                 () -> new MovieSessionNotFound(id)
         );
 
-        hasBookings(id);
+        ensureNoBookings(id);
     }
 
     public UpdateSessionRequest validatePatchBooking(MovieSession session,  UpdateSessionRequest request) {
 
-        hasBookings(session.getId());
+        ensureNoBookings(session.getId());
 
         UpdateSessionRequest body = new UpdateSessionRequest();
 
@@ -102,35 +104,28 @@ public class SessionValidationService {
         isCorrectStartTime(startTime);
     }
 
-    private boolean checkOverlaps(Long hallId, LocalDateTime startTime, LocalDateTime endTime) {
-        Integer countOverlaps = movieSessionRepository.countOverlaps(hallId, startTime, endTime);
-        if (countOverlaps > 0) {
-            throw new SessionTimeConflictException(hallId);
-        }
-        return true;
+    private void checkOverlaps(Long hallId, LocalDateTime startTime, LocalDateTime endTime) {
+        checkOverlapsExcludingSession(hallId, startTime, endTime, null);
     }
 
-    private boolean checkOverlapsExcludingSession(
+    private void checkOverlapsExcludingSession(
             Long hallId,
             LocalDateTime startTime,
             LocalDateTime endTime,
             Long sessionId
     ) {
-        Integer countOverlaps = movieSessionRepository.countOverlapsExcludingSession(
-                hallId,
-                startTime,
-                endTime,
-                sessionId
-        );
-        if (countOverlaps > 0) {
-            throw new SessionTimeConflictException(hallId);
+        for (MovieSession existing : movieSessionRepository.findByHallId(hallId)) {
+            if (existing.getId().equals(sessionId)) continue;
+            LocalDateTime existingEnd = existing.getStartTime()
+                    .plusMinutes(movieService.getMovie(existing.getMovieId()).getDuration());
+            if (startTime.isBefore(existingEnd) && endTime.isAfter(existing.getStartTime())) {
+                throw new SessionTimeConflictException(hallId);
+            }
         }
-        return true;
     }
 
-    private void hasBookings(Long id) {
-        int bookingsCount = movieSessionRepository.countBookings(id);
-        if (bookingsCount > 0) {
+    private void ensureNoBookings(Long id) {
+        if (bookingQueryService.hasBookingsForSession(id)) {
             throw new SessionHasBookingsException(id);
         }
     }

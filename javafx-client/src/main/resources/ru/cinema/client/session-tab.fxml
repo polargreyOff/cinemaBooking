@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="ru.cinema.client.ui.SessionTabController">
+  <top><VBox spacing="8" styleClass="toolbar">
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <Label text="Фильм:"/><TextField fx:id="sessionMovieSearch" promptText="Все фильмы · поиск по названию" prefWidth="260"/>
+      <Button text="Очистить поиск" onAction="#clearSessionMovieSearch"/>
+      <Label text="Зал:"/><ComboBox fx:id="sessionHallFilter" prefWidth="160"/>
+      <Button text="Обновить" onAction="#refresh"/>
+      <Label fx:id="sessionCount" text=""/>
+    </HBox>
+    <HBox spacing="8" alignment="CENTER_LEFT">
+      <Label text="С даты:"/><DatePicker fx:id="sessionDateFrom" prefWidth="145"/>
+      <Label text="По дату:"/><DatePicker fx:id="sessionDateTo" prefWidth="145"/>
+      <Label text="Время:"/><ComboBox fx:id="sessionTimeFilter" prefWidth="165"/>
+      <Button text="Сбросить время" onAction="#clearSessionTimeFilters"/>
+    </HBox>
+    <HBox spacing="8">
+      <Button fx:id="addSessionButton" text="Добавить сеанс" onAction="#addSession" styleClass="primary"/>
+      <Button fx:id="editSessionButton" text="Изменить" onAction="#editSession"/>
+      <Button fx:id="deleteSessionButton" text="Удалить" onAction="#deleteSession" styleClass="danger"/>
+    </HBox>
+    <fx:include fx:id="sessionBooking" source="session-booking.fxml"/>
+  </VBox></top>
+  <center><TableView fx:id="sessionTable">
+    <columns>
+      <TableColumn fx:id="sessionMovieColumn" text="Фильм" prefWidth="280"/>
+      <TableColumn fx:id="sessionHallColumn" text="Зал" prefWidth="100"/>
+      <TableColumn fx:id="sessionTimeColumn" text="Начало" prefWidth="190"/>
+      <TableColumn fx:id="sessionEndColumn" text="Конец" prefWidth="190"/>
+      <TableColumn fx:id="sessionPriceColumn" text="Цена" prefWidth="120"/>
+    </columns>
+  </TableView></center>
+  <right><fx:include fx:id="hallPane" source="hall-pane.fxml"/></right>
+</BorderPane>

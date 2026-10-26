@@ -2,7 +2,6 @@ package gradle.example.com.cinemabooking.models;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.ReadOnlyProperty;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -19,31 +18,11 @@ public class Booking {
     private Long sessionId;
     @Column("seat_id")
     private Long seatId;
-    @Transient
-    private MovieSession session;
-    @Transient
-    private Seat seat;
     @ReadOnlyProperty
     @Column("booking_time")
     private LocalDateTime bookingTime;
 
     public Booking() {
-    }
-
-    public Booking(
-            Long id,
-            Long userId,
-            MovieSession session,
-            Seat seat,
-            LocalDateTime bookingTime
-    ) {
-        this.id = id;
-        this.userId = userId;
-        this.session = session;
-        this.seat = seat;
-        this.sessionId = session == null ? null : session.getId();
-        this.seatId = seat == null ? null : seat.getId();
-        this.bookingTime = bookingTime;
     }
 
     public Booking(Long id, Long userId, Long sessionId, Long seatId, LocalDateTime bookingTime) {
@@ -60,14 +39,6 @@ public class Booking {
 
     public Long getUserId() {
         return userId;
-    }
-
-    public MovieSession getSession() {
-        return session;
-    }
-
-    public Seat getSeat() {
-        return seat;
     }
 
     public LocalDateTime getBookingTime() {
